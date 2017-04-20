@@ -3,6 +3,7 @@ from enigma import eTimer
 from config import config, ConfigSelection, ConfigSubsection
 from os import environ, unlink, symlink, walk, path
 import time
+from Tools.StbHardware import setRTCoffset
 
 def InitTimeZones():
 	config.timezone = ConfigSubsection()
@@ -150,6 +151,10 @@ class Timezones:
 		except:
 			from enigma import e_tzset
 			e_tzset()
+
+		if path.exists("/proc/stb/fp/rtc_offset"):
+			setRTCoffset()
+
 		if path.exists("/usr/lib/enigma2/python/Plugins/Extensions/AutoTimer/plugin.pyo") and config.plugins.autotimer.autopoll.value:
 			self.startATupdate()
 

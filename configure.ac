@@ -179,7 +179,6 @@ if test x"$withosdanimation" != xno ; then
 fi
 AM_CONDITIONAL(HAVE_OSDANIMATION, test x"$withosdanimation" != xno)
 
-
 if test `echo "$BOXTYPE" | cut -b 1-2` == "dm"; then
 	AC_DEFINE(DREAMBOX, 1, [Dreambox hardware])
 	AC_DEFINE(KEY_PLAY_ACTUALLY_IS_KEY_PLAYPAUSE, 1,[define when rc sends a KEY_PLAY event for its KEY_PLAYPAUSE key])
@@ -356,6 +355,10 @@ if test "$BOXTYPE" == "blackbox7405"; then
 	AC_DEFINE(KEY_PLAY_IS_KEY_PLAYPAUSE, 1,[define when rc sends a KEY_PLAY event for its KEY_PLAYPAUSE key])
 fi
 
+if test "$BOXTYPE" == "spark" -o "$BOXTYPE" == "spark7162"; then
+	AC_DEFINE(FORCE_ADVANCED_REMOTE, 1,[define to fixup the input device identification when the remote control is actually an 'advanced' remote (with play/forward/rewind keys)])
+fi
+
 if test "$BOXTYPE" == "g300"; then
 	AC_DEFINE(FORCE_BLENDING_ACCELERATION, 1,[define when the framebuffer acceleration has alphablending support, but detection slow down all])
 	AC_DEFINE(FORCE_ADVANCED_REMOTE, 1,[define to fixup the input device identification when the remote control is actually an 'advanced' remote (with play/forward/rewind keys)])
@@ -452,6 +455,7 @@ data/Makefile
 data/fonts/Makefile
 data/keymaps/Makefile
 data/displaytext/Makefile
+data/displaydualtext/Makefile
 data/display96/Makefile
 data/display128/Makefile
 data/display220/Makefile

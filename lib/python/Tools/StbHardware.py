@@ -1,3 +1,5 @@
+from time import time, localtime, gmtime
+from os import path
 from fcntl import ioctl
 from struct import pack, unpack
 from boxbranding import getBrandOEM
@@ -30,24 +32,15 @@ def setFPWakeuptime(wutime):
 			print "[StbHardware] Error: setFPWakeupTime failed!"
 
 def setRTCoffset():
-	import time
-	if time.localtime().tm_isdst == 0:
-		forsleep = 7200+time.timezone
-	else:
-		forsleep = 3600-time.timezone
-
-	t_local = time.localtime(int(time.time()))
-
-	print "[StbHardware] Set RTC to %s (rtc_offset = %s sec.)" % (time.strftime(config.usage.date.daylong.value + "  " + config.usage.time.short.value, t_local), forsleep)
-
-	# Set RTC OFFSET (diff. between UTC and Local Time)
+	forsleep = (localtime(time()).tm_hour-gmtime(time()).tm_hour)*3600
+	print "[StbHardware] Set RTC offset to %s sec." % (forsleep)
 	try:
 		open("/proc/stb/fp/rtc_offset", "w").write(str(forsleep))
 	except IOError:
 		print "[StbHardware] Error: setRTCoffset failed!"
 
 def setRTCtime(wutime):
-	if getBrandOEM() == 'ini':
+	if path.exists("/proc/stb/fp/rtc_offset"):
 		setRTCoffset()
 	try:
 		f = open("/proc/stb/fp/rtc", "w")
