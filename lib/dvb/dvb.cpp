@@ -281,8 +281,8 @@ bool eDVBAdapterLinux::isusb(int nr)
 	{
 		return true;
 	}
-	snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0", nr);
-	return readLink(devicename).find("usb") != std::string::npos;
+	snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/subsystem", nr);
+	return readLink(devicename).find("/usb") != std::string::npos;
 }
 
 DEFINE_REF(eDVBUsbAdapter);
@@ -880,6 +880,7 @@ RESULT eDVBResourceManager::allocateFrontend(ePtr<eDVBAllocatedFrontend> &fe, eP
 	foundone = 0;
 	check_fbc_leaf_linkable = false;
 	current_fbc_setid = -1;
+	c = 0;
 
 	for (eSmartPtrList<eDVBRegisteredFrontend>::iterator i(frontends.begin()); i != frontends.end(); ++i)
 	{
@@ -907,7 +908,7 @@ RESULT eDVBResourceManager::allocateFrontend(ePtr<eDVBAllocatedFrontend> &fe, eP
 
 		if (c)	/* if we have at least one frontend which is compatible with the source, flag this. */
 		{
-			eDebug("[eDVBResourceManager] allocateFrontend, score=%d", c);
+			// eDebug("[eDVBResourceManager] allocateFrontend, score=%d", c);
 			foundone = 1;
 		}
 
