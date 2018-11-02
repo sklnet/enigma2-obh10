@@ -25,7 +25,7 @@ def onMountpointAdded(mountpoint):
 	global searchPaths
 	try:
 		if getBoxType() in bw_lcd or config.lcd.picon_pack.value:
-			path = os.path.join(mountpoint, 'lcd_picon') + '/'
+			path = os.path.join(mountpoint, 'piconlcd') + '/'
 		else:
 			path = os.path.join(mountpoint, 'picon') + '/'
 		if os.path.isdir(path) and path not in searchPaths:
@@ -40,7 +40,7 @@ def onMountpointAdded(mountpoint):
 def onMountpointRemoved(mountpoint):
 	global searchPaths
 	if getBoxType() in bw_lcd or config.lcd.picon_pack.value:
-		path = os.path.join(mountpoint, 'lcd_picon') + '/'
+		path = os.path.join(mountpoint, 'piconlcd') + '/'
 	else:
 		path = os.path.join(mountpoint, 'picon') + '/'
 	try:
@@ -93,12 +93,16 @@ def getLcdPiconName(serviceName):
 		fields[6] = fields[6][:-4] + "0000"
 		pngname = findLcdPicon('_'.join(fields))
 	if not pngname and fields[0] != '1':
-		#fallback to 1 for other reftypes
+		#fallback to 1 for IPTV streams
 		fields[0] = '1'
 		pngname = findLcdPicon('_'.join(fields))
-	if not pngname and fields[2] != '1':
-		#fallback to 1 for services with different service types
+	if not pngname and fields[2] != '2':
+		#fallback to 1 for TV services with non-standard service types
 		fields[2] = '1'
+		pngname = findLcdPicon('_'.join(fields))
+	if not pngname and fields[9] != '0':
+		#fallback to 0 for iptv buffering
+		fields[9] = '0'
 		pngname = findLcdPicon('_'.join(fields))
 	if not pngname: # picon by channel name
 		name = ServiceReference(serviceName).getServiceName()
